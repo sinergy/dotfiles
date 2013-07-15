@@ -17,10 +17,6 @@ export PATH=${PATH}:~/Development/android-sdk-macosx/platform-tools
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && \. "$HOME/.rvm/scripts/rvm"
 source ~/.git-completion.bash
 
-# setting the ENV variable for mail sending of the early-signup
-export GMAIL_USERNAME="administrator@hitcaptcha.com"
-export GMAIL_PASSWORD="clickCaptcha"
-
 ##
 # Your previous /Users/Cloud/.bash_profile file was backed up as /Users/Cloud/.bash_profile.macports-saved_2013-04-11_at_07:15:13
 ##
