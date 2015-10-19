@@ -146,3 +146,8 @@ gifify() {
 batterylife() {
   max=`ioreg -l|grep MaxCapacity|awk '{print $5}'`;design=`ioreg -l|grep DesignCapacity|awk '{print $5}'`;echo "scale=4;$max/$design"| bc
 }
+
+# Open man page as PDF
+function manpdf() {
+  man -t "${1}" | open -f -a /Applications/Preview.app/
+}
