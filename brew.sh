@@ -1,5 +1,3 @@
-#!/use/bin/env bash
-
 # Make sure we’re using the latest Homebrew.
 brew update
 
@@ -34,3 +32,6 @@ brew cask install alfred
 brew cask install imageoptim
 brew cask install atext
 brew cask install sourcetree
+brew cask install ngrok
+brew cask install grammarly
+brew cask install spotify
