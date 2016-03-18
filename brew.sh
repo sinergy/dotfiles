@@ -18,6 +18,7 @@ brew install homebrew/php/php55 --with-gmp
 # Install otehr useful binaries.
 brew install repo
 brew install tree
+brew install pidcat
 
 # Install homebrew cask apps
 brew cask install iterm2
@@ -35,3 +36,4 @@ brew cask install sourcetree
 brew cask install ngrok
 brew cask install grammarly
 brew cask install spotify
+brew cask install spectacle
