@@ -16,5 +16,7 @@ export PATH=${PATH}:~/Development/android-sdk-macosx/platform-tools
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && \. "$HOME/.rvm/scripts/rvm"
 
-# git auto completion script
-source ~/.dotfiles/.git-completion.bash
+# git auto completion script, install bash-completion first through Homebrew
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi

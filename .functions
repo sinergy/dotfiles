@@ -151,3 +151,8 @@ batterylife() {
 function manpdf() {
   man -t "${1}" | open -f -a /Applications/Preview.app/
 }
+
+# colorize Java code snippet copied from the Clipboard and copy the colorized version
+function java-highlight {
+  pbpaste | highlight --syntax=java -O rtf | pbcopy
+}

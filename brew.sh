@@ -13,12 +13,12 @@ brew install vim --override-system-vi
 brew install homebrew/dupes/grep
 brew install homebrew/dupes/openssh
 brew install homebrew/dupes/screen
-brew install homebrew/php/php55 --with-gmp
 
 # Install otehr useful binaries.
 brew install repo
 brew install tree
 brew install pidcat
+brew install bash-completion
 
 # Install homebrew cask apps
 brew cask install iterm2
