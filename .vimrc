@@ -1,8 +1,11 @@
-runtime bundle/vim-pathogen/autoload/pathogen.vim
-filetype off " Pathogen needs to run before plugin indent on
-call pathogen#runtime_append_all_bundles()
-call pathogen#infect()
-call pathogen#helptags() " generate helptags for everything in 'runtimepath'
+" Start the Vim-Plug section
+call plug#begin('~/.vim/plugged')
+Plug 'junegunn/seoul256.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
+Plug 'git@github.com:vim-airline/vim-airline.git'
+call plug#end()
+
 "filetype plugin indent on
 filetype on           " Enable filetype detection
 filetype indent on    " Enable filetype-specific indenting
@@ -14,7 +17,7 @@ set incsearch                         " incremental search
 syntax enable
 set t_Co=256
 try
-  colorscheme railsenvy
+  colorscheme seoul256
 catch
 endtry
 set gfn=Monaco:h14
