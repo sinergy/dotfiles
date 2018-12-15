@@ -75,7 +75,10 @@ function gitexport(){
   git archive master | tar -x -C "$1"
 }
 
-
+# remove all the merged branch excepts master & developer branch
+function gitclean() {
+  git branch --merged | egrep -v "(^\*|master|dev|developer)" | xargs git branch -d
+}
 
 # get gzipped size
 function gz() {

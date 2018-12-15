@@ -38,7 +38,6 @@ alias l="ls -l ${colorflag}"
 # List all files colorized in long format, including dot files
 alias la="ls -la ${colorflag}"
 
-
 # List only directories
 alias lsd='ls -l | grep "^d"'
 
@@ -120,3 +119,12 @@ done
 alias stfu="osascript -e 'set volume output muted true'"
 alias pumpitup="osascript -e 'set volume 10'"
 alias hax="growlnotify -a 'Activity Monitor' 'System error' -m 'WTF R U DOIN'"
+
+# leverage the power of bat to provide the highlight, pagging, and line number features
+alias cat='bat'
+
+# Fuzzy find with bat-supported preview panel
+alias preview="fzf --preview 'bat --color \"always\" {}'"
+
+# Replace top with much more powerful one
+ailas top="htop"

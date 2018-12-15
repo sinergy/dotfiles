@@ -16,5 +16,6 @@ export HISTTIMEFORMAT
 # Make some commands not show up in history
 export HISTIGNORE="ls:ls *:cd:cd -:pwd;exit:date:* --help"
 
-# Make Yeoman command could be directly accessed
-export PATH=$PATH\:/usr/local/share/npm/bin
+# Android-related environment settings 
+export ANDROID_HOME="~/Library/Android/sdk"
+export PATH=${PATH}:~/Library/Android/sdk/platform-tools

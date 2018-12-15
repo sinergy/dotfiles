@@ -18,16 +18,17 @@ brew install homebrew/dupes/screen
 brew install repo
 brew install tree
 brew install pidcat
-brew install bash-completion
+brew install git bash-completion
+brew install bat
+brew install fzf
+brew install htop
+brew install tldr
 
 # Install homebrew cask apps
 brew cask install iterm2
-brew cask install teamviewer
-brew cask install google-chrome
 brew cask install firefox
 brew cask install 1password
 brew cask install sublime-text
-brew cask install hipchat
 brew cask install slack
 brew cask install alfred
 brew cask install imageoptim
