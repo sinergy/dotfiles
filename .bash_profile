@@ -9,9 +9,3 @@ unset file
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US"
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && \. "$HOME/.rvm/scripts/rvm"
-
-# git auto completion script, install bash-completion first through Homebrew
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-fi
