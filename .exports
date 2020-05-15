@@ -16,6 +16,16 @@ export HISTTIMEFORMAT
 # Make some commands not show up in history
 export HISTIGNORE="ls:ls *:cd:cd -:pwd;exit:date:* --help"
 
-# Android-related environment settings 
+# Android-related environment settings
 export ANDROID_HOME="~/Library/Android/sdk"
 export PATH=${PATH}:~/Library/Android/sdk/platform-tools
+export PATH=${PATH}:~/Library/Android/sdk/emulator
+
+# For EC-GraphQL, we need node@8
+# export PATH=/usr/local/opt/node@8/bin:${PATH}
+
+# For Commitizen, we need node@10
+export PATH=/usr/local/opt/node@10/bin:${PATH}
+
+# For android-resource-remover
+export PATH=${PATH}:/usr/local/bin

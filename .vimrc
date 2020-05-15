@@ -241,3 +241,6 @@ nmap <leader>v :tabe $MYVIMRC<CR>
 
 " zen coding customize extending key map
 inoremap <C-e> <C-y>
+
+" execute shell script without leaving vim
+nnoremap <F9> :!%:p

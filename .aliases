@@ -49,6 +49,8 @@ alias c='pygmentize -O style=monokai -f console256 -g'
 # Undo a `git push`
 alias undopush="git push -f origin HEAD^:master"
 
+# Sync from upstream & Update to origin
+alias gitsync="git checkout develop; git fetch upstream; git rebase upstream/develop; git push;"
 
 # git root
 alias gr='[ ! -z `git rev-parse --show-cdup` ] && cd `git rev-parse --show-cdup || pwd`'
@@ -118,4 +120,4 @@ alias cat='bat'
 alias preview="fzf --preview 'bat --color \"always\" {}'"
 
 # Replace top with much more powerful one
-ailas top="htop"
+alias top="htop"
