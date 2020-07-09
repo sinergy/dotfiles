@@ -17,7 +17,7 @@ export HISTTIMEFORMAT
 export HISTIGNORE="ls:ls *:cd:cd -:pwd;exit:date:* --help"
 
 # Android-related environment settings
-export ANDROID_HOME="~/Library/Android/sdk"
+export ANDROID_HOME=${HOME}/Library/Android/sdk
 export PATH=${PATH}:~/Library/Android/sdk/platform-tools
 export PATH=${PATH}:~/Library/Android/sdk/emulator
 

@@ -1,0 +1,6 @@
+set tab-size = 4
+
+# set main view's date format
+set main-view-date = custom
+set main-view-date-format = "%Y-%m-%d %H:%M"
+set main-view-author-display = abbreviated
