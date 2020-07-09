@@ -18,7 +18,7 @@ brew install homebrew/dupes/screen
 brew install repo
 brew install tree
 brew install pidcat
-brew install git bash-completion
+brew install git bash-completion git-standup
 brew install bat
 brew install fzf
 brew install htop
@@ -29,6 +29,7 @@ brew cask install iterm2
 brew cask install firefox
 brew cask install 1password
 brew cask install sublime-text
+brew cask install sublime-merge
 brew cask install slack
 brew cask install alfred
 brew cask install imageoptim
