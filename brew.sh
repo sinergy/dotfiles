@@ -17,7 +17,7 @@ brew install homebrew/dupes/screen
 # Install otehr useful binaries.
 brew install tree
 brew install pidcat
-brew install git bash-completion git-standup
+brew install git tig bash-completion git-standup
 brew install bat
 brew install fzf
 brew install htop
