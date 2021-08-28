@@ -15,7 +15,6 @@ brew install homebrew/dupes/openssh
 brew install homebrew/dupes/screen
 
 # Install otehr useful binaries.
-brew install repo
 brew install tree
 brew install pidcat
 brew install git bash-completion git-standup
@@ -25,17 +24,25 @@ brew install htop
 brew install tldr
 
 # Install homebrew cask apps
-brew cask install iterm2
-brew cask install firefox
-brew cask install 1password
-brew cask install sublime-text
-brew cask install sublime-merge
-brew cask install slack
-brew cask install alfred
-brew cask install imageoptim
-brew cask install atext
-brew cask install sourcetree
-brew cask install ngrok
-brew cask install grammarly
-brew cask install spotify
-brew cask install spectacle
+brew install iterm2
+brew install firefox
+brew install microsoft-edge
+brew install vivaldi
+brew install 1password
+brew install lastpass
+brew install bitwarden
+brew install sublime-text
+brew install sublime-merge
+brew install slack
+brew install alfred
+brew install imageoptim
+brew install atext
+brew install sourcetree
+brew install ngrok
+brew install grammarly
+brew install spectacle
+brew install jetbrains-toolbox
+brew install charles
+brew install gitify
+brew install muzzle
+brew install flipper
