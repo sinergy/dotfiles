@@ -36,12 +36,13 @@ brew install sublime-merge
 brew install slack
 brew install alfred
 brew install imageoptim
-brew install atext
+brew install keyboard-maestro8
 brew install sourcetree
 brew install ngrok
 brew install grammarly
 brew install spectacle
 brew install jetbrains-toolbox
+brew install visual-studio-code
 brew install charles
 brew install gitify
 brew install muzzle
