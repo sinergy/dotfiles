@@ -154,3 +154,32 @@ function manpdf() {
 function java-highlight {
   pbpaste | highlight --syntax=java -O rtf | pbcopy
 }
+
+# list all local git branches which are suqash-merged into the base branch
+function list-squash-merged-branches() {
+  base='upstream/develop'
+  git checkout -q $base && git for-each-ref refs/heads/ "--format=%(refname:short)" | \
+    while read branch; \
+      do mergeBase=$(git merge-base $base $branch) \
+        && \
+        [[ $(git cherry $base $(git commit-tree $(git rev-parse $branch^{tree}) -p $mergeBase -m _)) == "-"* ]] \
+        && \
+        echo "$branch is merged into $base and can be deleted"; \
+      done
+  git checkout -q -
+}
+
+
+# delete all local git branches which are suqash-merged into the base branch
+function delete-squash-merged-branches() {
+  base='upstream/develop'
+  git checkout -q $base && git for-each-ref refs/heads/ "--format=%(refname:short)" | \
+    while read branch; \
+      do mergeBase=$(git merge-base $base $branch) \
+        && \
+        [[ $(git cherry $base $(git commit-tree $(git rev-parse $branch^{tree}) -p $mergeBase -m _)) == "-"* ]] \
+        && \
+        git branch -D $branch; \
+      done
+  git checkout -q -
+}
