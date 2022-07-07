@@ -133,8 +133,11 @@ gifify() {
   if [[ -n "$1" ]]; then
     local palette="/tmp/palette.png"
     local filters="fps=10,scale=360:-1:flags=lanczos"
+    local dir=$(dirname -- "$1")
+    local file=$(basename -- "$1")
+    local filename=${file%%.*}
     ffmpeg -v warning -i $1 -vf "$filters,palettegen" -y $palette
-    ffmpeg -v warning -i $1 -i $palette -lavfi "$filters [x]; [x][1:v] paletteuse" -y $1.gif
+    ffmpeg -v warning -i $1 -i $palette -lavfi "$filters [x]; [x][1:v] paletteuse" -y "$dir/$filename.gif"
   else
     echo "proper usage: webm2gif <input_movie.webm>. You Do need to include extension."
   fi
@@ -182,4 +185,11 @@ function delete-squash-merged-branches() {
         git branch -D $branch; \
       done
   git checkout -q -
+}
+
+# quick set the JAVA_HOME enviroment variable
+function javahome() {
+  unset JAVA_HOME
+  export JAVA_HOME=$(/usr/libexec/java_home -v "$1");
+  java -version
 }
