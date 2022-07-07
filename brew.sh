@@ -34,7 +34,7 @@ brew install bitwarden
 brew install sublime-text
 brew install sublime-merge
 brew install slack
-brew install alfred
+brew install raycast
 brew install imageoptim
 brew install keyboard-maestro8
 brew install sourcetree
