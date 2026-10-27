@@ -1,6 +1,6 @@
 # Create a new directory and enter it
 function md() {
-  mkdir -p "$@" && cd "$@"
+  mkdir -p "$@" && cd "${@: -1}"
 }
 
 
@@ -21,7 +21,7 @@ function server() {
   open "http://localhost:${port}/"
   # Set the default Content-Type to `text/plain` instead of `application/octet-stream`
   # And serve everything as UTF-8 (although not technically correct, this doesn’t break anything for binary files)
-  python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port"
+  python3 -c $'import sys\nfrom http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer\nclass Handler(SimpleHTTPRequestHandler):\n\tdef guess_type(self, path):\n\t\ttype = super().guess_type(path)\n\t\tif type == "application/octet-stream":\n\t\t\ttype = "text/plain"\n\t\treturn type + ";charset=UTF-8"\nThreadingHTTPServer(("", int(sys.argv[1])), Handler).serve_forever()' "$port"
 }
 
 # git log with per-commit cmd-clickable GitHub URLs (iTerm)
@@ -29,7 +29,7 @@ function gf() {
   local remote="$(git remote -v | awk '/^origin.*\(push\)$/ {print $2}')"
   [[ "$remote" ]] || return
   local user_repo="$(echo "$remote" | perl -pe 's/.*://;s/\.git$//')"
-  git log $* --name-status --color | awk "$(cat <<AWK
+  git log "$@" --name-status --color | awk "$(cat <<AWK
     /^.*commit [0-9a-f]{40}/ {sha=substr(\$2,1,7)}
     /^[MA]\t/ {printf "%s\thttps://github.com/$user_repo/blob/%s/%s\n", \$1, sha, \$2; next}
     /.*/ {print \$0}
@@ -40,24 +40,24 @@ AWK
 
 # Copy w/ progress
 cp_p () {
-  rsync -WavP --human-readable --progress $1 $2
+  rsync -WavP --human-readable --progress "$1" "$2"
 }
 
 
-# Test if HTTP compression (RFC 2616 + SDCH) is enabled for a given URL.
+# Test if HTTP compression is enabled for a given URL.
 # Send a fake UA string for sites that sniff it instead of using the Accept-Encoding header. (Looking at you, ajax.googleapis.com!)
 function httpcompression() {
-  encoding="$(curl -LIs -H 'User-Agent: Mozilla/5 Gecko' -H 'Accept-Encoding: gzip,deflate,compress,sdch' "$1" | grep '^Content-Encoding:')" && echo "$1 is encoded using ${encoding#* }" || echo "$1 is not using any encoding"
+  encoding="$(curl -LIs -H 'User-Agent: Mozilla/5 Gecko' -H 'Accept-Encoding: gzip, deflate, br, zstd' "$1" | grep -i '^Content-Encoding:')" && echo "$1 is encoded using ${encoding#* }" || echo "$1 is not using any encoding"
 }
 
 # Syntax-highlight JSON strings or files
 function json() {
   if [ -p /dev/stdin ]; then
     # piping, e.g. `echo '{"foo":42}' | json`
-    python -mjson.tool | pygmentize -l javascript
+    python3 -m json.tool | bat -l json -p
   else
     # e.g. `json '{"foo":42}'`
-    python -mjson.tool <<< "$*" | pygmentize -l javascript
+    python3 -m json.tool <<< "$*" | bat -l json -p
   fi
 }
 
@@ -65,55 +65,63 @@ function json() {
 # take this repo and copy it to somewhere else minus the .git stuff.
 function gitexport(){
   mkdir -p "$1"
-  git archive master | tar -x -C "$1"
+  git archive HEAD | tar -x -C "$1"
 }
 
-# remove all the merged branch excepts master & developer branch
+# remove all the merged branches except the current one and master, main, develop & dev
 function gitclean() {
-  git branch --merged | egrep -v "(^\*|master|dev|developer)" | xargs git branch -d
+  git branch --format='%(refname:short)' --merged \
+    | grep -vxE "master|main|develop|developer|dev|$(git branch --show-current)" \
+    | xargs git branch -d
 }
 
 # get gzipped size
 function gz() {
   echo "orig size    (bytes): "
-  cat "$1" | wc -c
+  wc -c < "$1"
   echo "gzipped size (bytes): "
   gzip -c "$1" | wc -c
 }
 
-# All the dig info
+# All the dig info (most servers refuse `ANY` queries, so ask for each type)
 function digga() {
-  dig +nocmd "$1" any +multiline +noall +answer
+  local type
+  for type in A AAAA CNAME MX NS TXT SOA; do
+    dig +nocmd "$1" "$type" +multiline +noall +answer
+  done
 }
 
 # Escape UTF-8 characters into their 3-byte format
 function escape() {
-  printf "\\\x%s" $(printf "$@" | xxd -p -c1 -u)
+  printf '%s' "$*" | xxd -p -c1 -u | sed 's/^/\\x/' | tr -d '\n'
   echo # newline
 }
 
 # Decode \x{ABCD}-style Unicode escape sequences
 function unidecode() {
-  perl -e "binmode(STDOUT, ':utf8'); print \"$@\""
+  printf '%s' "$*" | perl -CO -pe 's/\\x\{([0-9A-Fa-f]+)\}/chr(hex($1))/ge'
   echo # newline
 }
 
 # Extract archives - use: extract <file>
 # Credits to http://dotfiles.org/~pseup/.bashrc
 function extract() {
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2) tar xjf $1 ;;
-      *.tar.gz) tar xzf $1 ;;
-      *.bz2) bunzip2 $1 ;;
-      *.rar) rar x $1 ;;
-      *.gz) gunzip $1 ;;
-      *.tar) tar xf $1 ;;
-      *.tbz2) tar xjf $1 ;;
-      *.tgz) tar xzf $1 ;;
-      *.zip) unzip $1 ;;
-      *.Z) uncompress $1 ;;
-      *.7z) 7z x $1 ;;
+  if [ -f "$1" ] ; then
+    case "$1" in
+      *.tar.bz2) tar xjf "$1" ;;
+      *.tar.gz) tar xzf "$1" ;;
+      *.tar.xz) tar xJf "$1" ;;
+      *.bz2) bunzip2 "$1" ;;
+      *.rar) unrar x "$1" ;;
+      *.gz) gunzip "$1" ;;
+      *.xz) unxz "$1" ;;
+      *.tar) tar xf "$1" ;;
+      *.tbz2) tar xjf "$1" ;;
+      *.tgz) tar xzf "$1" ;;
+      *.txz) tar xJf "$1" ;;
+      *.zip) unzip "$1" ;;
+      *.Z) uncompress "$1" ;;
+      *.7z) 7z x "$1" ;;
       *) echo "'$1' cannot be extracted via extract()" ;;
     esac
   else
@@ -124,26 +132,27 @@ function extract() {
 # animated gifs from any video
 gifify() {
   if [[ -n "$1" ]]; then
-    local palette="/tmp/palette.png"
+    local palette="$(mktemp -t palette).png"
     local filters="fps=10,scale=360:-1:flags=lanczos"
     local dir=$(dirname -- "$1")
     local file=$(basename -- "$1")
     local filename=${file%%.*}
-    ffmpeg -v warning -i $1 -vf "$filters,palettegen" -y $palette
-    ffmpeg -v warning -i $1 -i $palette -lavfi "$filters [x]; [x][1:v] paletteuse" -y "$dir/$filename.gif"
+    ffmpeg -v warning -i "$1" -vf "$filters,palettegen" -y "$palette"
+    ffmpeg -v warning -i "$1" -i "$palette" -lavfi "$filters [x]; [x][1:v] paletteuse" -y "$dir/$filename.gif"
+    rm -f "$palette"
   else
-    echo "proper usage: webm2gif <input_movie.webm>. You Do need to include extension."
+    echo "proper usage: gifify <input_movie.mov>. You Do need to include extension."
   fi
 }
 
-# display the remained battery life of your machine
+# display the remaining battery health (current max capacity vs. design capacity)
 batterylife() {
-  max=`ioreg -l|grep MaxCapacity|awk '{print $5}'`;design=`ioreg -l|grep DesignCapacity|awk '{print $5}'`;echo "scale=4;$max/$design"| bc
+  ioreg -rn AppleSmartBattery | awk '/"AppleRawMaxCapacity" =/ {max=$3} /"DesignCapacity" =/ {design=$3} END {printf "%.1f%%\n", max / design * 100}'
 }
 
 # Open man page as PDF
 function manpdf() {
-  man -t "${1}" | open -f -a /Applications/Preview.app/
+  mandoc -T pdf "$(man -w "${1}")" | open -f -a Preview
 }
 
 # colorize Java code snippet copied from the Clipboard and copy the colorized version
@@ -151,38 +160,29 @@ function java-highlight {
   pbpaste | highlight --syntax=java -O rtf | pbcopy
 }
 
-# list all local git branches which are suqash-merged into the base branch
+# list all local git branches which are squash-merged into the base branch (default: upstream/develop)
 function list-squash-merged-branches() {
-  base='upstream/develop'
-  git checkout -q $base && git for-each-ref refs/heads/ "--format=%(refname:short)" | \
-    while read branch; \
-      do mergeBase=$(git merge-base $base $branch) \
+  local base="${1:-upstream/develop}" branch mergeBase
+  git for-each-ref refs/heads/ "--format=%(refname:short)" | \
+    while read -r branch; do
+      mergeBase=$(git merge-base "$base" "$branch") \
         && \
-        [[ $(git cherry $base $(git commit-tree $(git rev-parse $branch^{tree}) -p $mergeBase -m _)) == "-"* ]] \
+        [[ $(git cherry "$base" "$(git commit-tree "$(git rev-parse "$branch^{tree}")" -p "$mergeBase" -m _)") == "-"* ]] \
         && \
-        echo "$branch is merged into $base and can be deleted"; \
-      done
-  git checkout -q -
+        echo "$branch"
+    done
 }
 
 
-# delete all local git branches which are suqash-merged into the base branch
+# delete all local git branches which are squash-merged into the base branch (default: upstream/develop)
 function delete-squash-merged-branches() {
-  base='upstream/develop'
-  git checkout -q $base && git for-each-ref refs/heads/ "--format=%(refname:short)" | \
-    while read branch; \
-      do mergeBase=$(git merge-base $base $branch) \
-        && \
-        [[ $(git cherry $base $(git commit-tree $(git rev-parse $branch^{tree}) -p $mergeBase -m _)) == "-"* ]] \
-        && \
-        git branch -D $branch; \
-      done
-  git checkout -q -
+  list-squash-merged-branches "$@" \
+    | grep -vxF "$(git branch --show-current)" \
+    | xargs git branch -D
 }
 
-# quick set the JAVA_HOME enviroment variable
+# quick set the JAVA_HOME environment variable
 function javahome() {
-  unset JAVA_HOME
   export JAVA_HOME=$(/usr/libexec/java_home -v "$1");
   java -version
 }
