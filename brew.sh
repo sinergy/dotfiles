@@ -2,14 +2,14 @@
 brew update
 
 # Upgrade any already-installed formulae.
-brew upgrade --all
+brew upgrade
 
 # Install command-line tools using Homebrew.
-# Install `wget` with IRI support.
-brew install wget --with-iri
+# Install `wget`.
+brew install wget
 
 # Install more recent versions of some OS X tools.
-brew install vim --override-system-vi
+brew install vim
 
 # Install otehr useful binaries.
 brew install pidcat
@@ -19,7 +19,7 @@ brew install fzf
 brew install htop
 brew install tlrc
 brew install uv
-brew install bottm
+brew install bottom
 
 # Install homebrew cask apps
 brew install ghostty
