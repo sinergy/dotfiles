@@ -21,6 +21,11 @@ brew install tlrc
 brew install uv
 brew install bottom
 
+# Used by functions in .functions
+brew install ffmpeg     # gifify
+brew install highlight  # java-highlight
+brew install sevenzip   # extract (.7z and .rar, via 7zz)
+
 # Install homebrew cask apps
 brew install ghostty
 brew install 1password
